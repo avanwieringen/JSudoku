@@ -4,6 +4,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
+
 import avanwieringen.tools.*;
 
 /**
@@ -38,7 +40,7 @@ public class Sudoku {
 	 */
 	protected int maxValue;
 	
-	protected boolean[][] possiblities;
+	protected boolean[][] possibilities;
 
 	/**
 	 * Construct an empty 9^2 * 9^2 Sudoku
@@ -67,6 +69,11 @@ public class Sudoku {
 		// fill values and possiblities
 		this.values 		= new int[values.length()];
 		this.maxValue 		= (int)Math.pow(values.length(), 0.25);
+		this.possibilities  = new boolean[this.values.length][this.maxValue];
+		
+		for(int i = 0; i < values.length(); i++) {
+			Arrays.fill(this.possibilities[i], false);
+		}		
 		for(int i = 0; i < values.length(); i++) {
 			//this.values[i] = this.parseValue(values.charAt(i));
 			this.setValue(this.getRowNumberFromIndex(i), this.getRowNumberFromIndex(i), this.parseValue(values.charAt(i)));
@@ -111,8 +118,13 @@ public class Sudoku {
 	 * @param c
 	 * @param value
 	 */
-	public void removePossibility(int r, int c, int value) {
-		int non = this.getNonetNumberFromIndex(this.getIndex(r, c));
+	public void removePossibilityFromSiblings(int r, int c, int value) {
+		int non 	= this.getNonetNumberFromIndex(this.getIndex(r, c));
+		int index 	= this.getIndex(r, c);
+		
+		for(int i = 0; i < this.maxValue; i++) {
+			
+		}
 	}
 	
 	/**
