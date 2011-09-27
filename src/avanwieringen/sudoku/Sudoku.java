@@ -4,6 +4,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import avanwieringen.tools.*;
+
 /**
  * 
  * @author arjan
@@ -35,6 +37,8 @@ public class Sudoku {
 	 * The maximum value of a cell (equal to the row-, column- and nonet count)
 	 */
 	protected int maxValue;
+	
+	protected boolean[][] possiblities;
 
 	/**
 	 * Construct an empty 9^2 * 9^2 Sudoku
@@ -53,22 +57,31 @@ public class Sudoku {
 	
 	/**
 	 * Create a Sudoku of the given values
-	 * @param values
+	 * @param values A String of 81 characters specifying the values
 	 */
 	public Sudoku(String values) {
 		if(Math.pow(values.length(), 0.25) != (int)Math.pow(values.length(), 0.25)) {
 			throw new IllegalArgumentException("Values should be a String of n^2 * n^2 characters");
 		}
 		
-		// fill values and relations
+		// fill values and possiblities
 		this.values 		= new int[values.length()];
 		this.maxValue 		= (int)Math.pow(values.length(), 0.25);
+		for(int i = 0; i < values.length(); i++) {
+			//this.values[i] = this.parseValue(values.charAt(i));
+			this.setValue(this.getRowNumberFromIndex(i), this.getRowNumberFromIndex(i), this.parseValue(values.charAt(i)));
+		}
+		
+		// fill relations
 		this.rowRelations 	= new int[this.maxValue][this.maxValue];
 		this.colRelations 	= new int[this.maxValue][this.maxValue];
 		this.nonRelations 	= new int[this.maxValue][this.maxValue];
-		for(int i = 0; i < values.length(); i++) {
-			this.values[i] = this.parseValue(values.charAt(i));
-			
+		for(int i = 0; i < this.maxValue; i++) {
+			for(int j = 0; j < this.maxValue; j++) {
+				this.rowRelations[i][j] = (i*this.maxValue + j);
+				this.colRelations[i][j] = (i + j*this.maxValue);
+				this.nonRelations[i][j] = (int) (i*Math.sqrt(this.maxValue) + j%Math.sqrt(this.maxValue) + (int)(j/Math.sqrt(this.maxValue))*this.maxValue);
+			}			
 		}
 	}
 	
@@ -80,6 +93,41 @@ public class Sudoku {
 	 */
 	public int getValue(int r, int c) {
 		return this.values[this.getIndex(r, c)];
+	}
+	
+	/**
+	 * Sets the value of a specific cell, updating the possibilities
+	 * @param r
+	 * @param c
+	 * @param value
+	 */
+	public void setValue(int r, int c, int value) {
+		this.setValue(r, c, value, true);
+	}
+	
+	/**
+	 * Removes the given possibility from all the cells belonging to this cell and row
+	 * @param r
+	 * @param c
+	 * @param value
+	 */
+	public void removePossibility(int r, int c, int value) {
+		int non = this.getNonetNumberFromIndex(this.getIndex(r, c));
+	}
+	
+	/**
+	 * Sets the value of a specific cell, with the possibility of updating the possibilities (non-destructive)
+	 * @param r
+	 * @param c
+	 * @param value
+	 * @param updatePossiblities
+	 */
+	protected void setValue(int r, int c, int value, boolean updatePossibilities) {
+		this.values[this.getIndex(r, c)] = this.parseValue(value);
+		
+		if(updatePossibilities) {
+		
+		}
 	}
 	
 	/**
@@ -139,6 +187,18 @@ public class Sudoku {
 		} else {
 			return CharUtils.toIntValue(value);
 		}
+	}
+	
+	/**
+	 * Parses an int value to the corresponding integer value
+	 * @param value
+	 * @return the parsed value
+	 */
+	protected int parseValue(int value) {
+		if(value > this.maxValue || value < 0) {
+			throw new IndexOutOfBoundsException("Values must lie between 0 (empty) or " + this.maxValue);
+		}
+		return value;
 	}
 	
 	/**
