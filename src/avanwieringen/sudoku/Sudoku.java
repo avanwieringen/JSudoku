@@ -18,7 +18,7 @@ public class Sudoku {
 	/**
 	 * Values of the Sudoku
 	 */
-	protected int[] values;
+	protected Cell[][] values;
 	
 	/**
 	 * Array specifying for each row the indices of the cells belonging to it
@@ -39,8 +39,6 @@ public class Sudoku {
 	 * The maximum value of a cell (equal to the row-, column- and nonet count)
 	 */
 	protected int maxValue;
-	
-	protected boolean[][] possibilities;
 
 	/**
 	 * Construct an empty 9^2 * 9^2 Sudoku
@@ -66,21 +64,16 @@ public class Sudoku {
 			throw new IllegalArgumentException("Values should be a String of n^2 * n^2 characters");
 		}
 		
-		// fill values and possiblities
-		this.values 		= new int[values.length()];
+		// fill values and possibilities
 		this.maxValue 		= (int)Math.pow(values.length(), 0.25);
-		this.possibilities  = new boolean[this.values.length][this.maxValue];
+		this.values 		= new Cell[this.maxValue][this.maxValue];
 		
 		for(int i = 0; i < values.length(); i++) {
-			Arrays.fill(this.possibilities[i], false);
-		}		
-		for(int i = 0; i < values.length(); i++) {
-			//this.values[i] = this.parseValue(values.charAt(i));
 			this.setValue(this.getRowNumberFromIndex(i), this.getRowNumberFromIndex(i), this.parseValue(values.charAt(i)));
 		}
 		
 		// fill relations
-		this.rowRelations 	= new int[this.maxValue][this.maxValue];
+		/**this.rowRelations 	= new int[this.maxValue][this.maxValue];
 		this.colRelations 	= new int[this.maxValue][this.maxValue];
 		this.nonRelations 	= new int[this.maxValue][this.maxValue];
 		for(int i = 0; i < this.maxValue; i++) {
@@ -89,7 +82,7 @@ public class Sudoku {
 				this.colRelations[i][j] = (i + j*this.maxValue);
 				this.nonRelations[i][j] = (int) (i*Math.sqrt(this.maxValue) + j%Math.sqrt(this.maxValue) + (int)(j/Math.sqrt(this.maxValue))*this.maxValue);
 			}			
-		}
+		}**/
 	}
 	
 	/**
@@ -99,47 +92,7 @@ public class Sudoku {
 	 * @return Value
 	 */
 	public int getValue(int r, int c) {
-		return this.values[this.getIndex(r, c)];
-	}
-	
-	/**
-	 * Sets the value of a specific cell, updating the possibilities
-	 * @param r
-	 * @param c
-	 * @param value
-	 */
-	public void setValue(int r, int c, int value) {
-		this.setValue(r, c, value, true);
-	}
-	
-	/**
-	 * Removes the given possibility from all the cells belonging to this cell and row
-	 * @param r
-	 * @param c
-	 * @param value
-	 */
-	public void removePossibilityFromSiblings(int r, int c, int value) {
-		int non 	= this.getNonetNumberFromIndex(this.getIndex(r, c));
-		int index 	= this.getIndex(r, c);
-		
-		for(int i = 0; i < this.maxValue; i++) {
-			
-		}
-	}
-	
-	/**
-	 * Sets the value of a specific cell, with the possibility of updating the possibilities (non-destructive)
-	 * @param r
-	 * @param c
-	 * @param value
-	 * @param updatePossiblities
-	 */
-	protected void setValue(int r, int c, int value, boolean updatePossibilities) {
-		this.values[this.getIndex(r, c)] = this.parseValue(value);
-		
-		if(updatePossibilities) {
-		
-		}
+		return this.values[r][c].getValue();
 	}
 	
 	/**
