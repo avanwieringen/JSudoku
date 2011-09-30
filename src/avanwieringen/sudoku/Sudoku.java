@@ -4,6 +4,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.CharUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import com.sun.tools.corba.se.idl.InvalidArgument;
+
 import java.util.Arrays;
 
 import avanwieringen.tools.*;
@@ -18,27 +20,18 @@ public class Sudoku {
 	/**
 	 * Values of the Sudoku
 	 */
-	protected Cell[][] values;
-	
-	/**
-	 * Array specifying for each row the indices of the cells belonging to it
-	 */
-	protected int[][] rowRelations;
-	
-	/**
-	 * Array specifying for each column the indices of the cells belonging to it
-	 */
-	protected int[][] colRelations;
-	
-	/**
-	 * Array specifying for each nonet the indices of the cells belonging to it
-	 */
-	protected int[][] nonRelations;
+	protected Cell[][] cells;
 	
 	/**
 	 * The maximum value of a cell (equal to the row-, column- and nonet count)
 	 */
 	protected int maxValue;
+	
+	protected CellCollection[] rows;
+	
+	protected CellCollection[] columns;
+	
+	protected CellCollection[] nonets;
 
 	/**
 	 * Construct an empty 9^2 * 9^2 Sudoku
@@ -66,23 +59,41 @@ public class Sudoku {
 		
 		// fill values and possibilities
 		this.maxValue 		= (int)Math.pow(values.length(), 0.25);
-		this.values 		= new Cell[this.maxValue][this.maxValue];
+		this.cells 			= new Cell[this.maxValue][this.maxValue];
+		this.rows			= new CellCollection[this.maxValue];
+		this.columns 		= new CellCollection[this.maxValue];
+		this.nonets 		= new CellCollection[this.maxValue];
 		
+		int row;
+		int column;
+		int nonet;
+		Cell cell;
 		for(int i = 0; i < values.length(); i++) {
-			this.setValue(this.getRowNumberFromIndex(i), this.getRowNumberFromIndex(i), this.parseValue(values.charAt(i)));
+			
+			if(i >= 0 && i < this.maxValue) {
+				try {
+					this.rows[i] 	= new CellCollection(this.maxValue, CellCollection.ROW_TYPE);
+					this.columns[i] = new CellCollection(this.maxValue, CellCollection.COLUMN_TYPE);
+					this.nonets[i] 	= new CellCollection(this.maxValue, CellCollection.NONET_TYPE);
+				} catch (InvalidArgument e) {
+					e.printStackTrace();
+				}
+			}
+			
+			row 	= (int)(i/this.maxValue);
+			column 	= (int)(i%this.maxValue);
+			nonet  	= (int) (((int)(row/Math.sqrt(this.maxValue)) * Math.sqrt(this.maxValue)) + ((int)(column / Math.sqrt(this.maxValue))));
+			cell    = new Cell();
+			this.cells[row][column] = cell;
+			this.setValue(row, column, this.parseValue(values.charAt(i)));			
+			this.rows[row].addCell(cell);
+			this.columns[column].addCell(cell);
+			this.nonets[nonet].addCell(cell);
 		}
-		
-		// fill relations
-		/**this.rowRelations 	= new int[this.maxValue][this.maxValue];
-		this.colRelations 	= new int[this.maxValue][this.maxValue];
-		this.nonRelations 	= new int[this.maxValue][this.maxValue];
-		for(int i = 0; i < this.maxValue; i++) {
-			for(int j = 0; j < this.maxValue; j++) {
-				this.rowRelations[i][j] = (i*this.maxValue + j);
-				this.colRelations[i][j] = (i + j*this.maxValue);
-				this.nonRelations[i][j] = (int) (i*Math.sqrt(this.maxValue) + j%Math.sqrt(this.maxValue) + (int)(j/Math.sqrt(this.maxValue))*this.maxValue);
-			}			
-		}**/
+	}
+	
+	public void setValue(int r, int c, int value) {
+		this.cells[r][c].setValue(value);
 	}
 	
 	/**
@@ -92,7 +103,7 @@ public class Sudoku {
 	 * @return Value
 	 */
 	public int getValue(int r, int c) {
-		return this.values[r][c].getValue();
+		return this.cells[r][c].getValue();
 	}
 	
 	/**
@@ -128,19 +139,6 @@ public class Sudoku {
 	}
 	
 	/**
-	 * Gets the 1-dimensional index belonging to the specified row and column (0-based)
-	 * @param r Row-index 0-based
-	 * @param c Column-index 0-based
-	 * @return 1-dimensional index
-	 */
-	protected int getIndex(int r, int c) {
-		if(r >= this.maxValue || c >= this.maxValue) {
-			throw new IndexOutOfBoundsException("Row and column indices must be < " + this.maxValue);
-		}
-		return r*this.maxValue+c;
-	}
-	
-	/**
 	 * Parses a char value to the corresponding integer value, counting '.', '0', ' ', '-' and'x' as empty values
 	 * @param value
 	 * @return the parsed value
@@ -164,34 +162,5 @@ public class Sudoku {
 			throw new IndexOutOfBoundsException("Values must lie between 0 (empty) or " + this.maxValue);
 		}
 		return value;
-	}
-	
-	/**
-	 * Gets the row number (0-based) belonging to the specified 1-dimensional index
-	 * @param i 1-dimensional index
-	 * @return Row number (0-based)
-	 */
-	protected int getRowNumberFromIndex(int i) {
-		return (int)(i/this.maxValue);
-	}
-	
-	/**
-	 * Gets the column number (0-based) belonging to the specified 1-dimensional index
-	 * @param i 1-dimensional index
-	 * @return Column number (0-based)
-	 */
-	protected int getColumnNumberFromIndex(int i) {
-		return (int)(i%this.maxValue);
-	}
-	
-	/**
-	 * Gets the nonet number (0-based) belonging to the specified 1-dimensional index
-	 * @param i 1-dimensional index
-	 * @return Nonet number (0-based)
-	 */
-	protected int getNonetNumberFromIndex(int i) {
-		int r = this.getRowNumberFromIndex(i);
-		int c = this.getColumnNumberFromIndex(i);
-		return  (int) (((int)(r/Math.sqrt(this.maxValue)) * Math.sqrt(this.maxValue)) + ((int)(c / Math.sqrt(this.maxValue))));
 	}
 }
