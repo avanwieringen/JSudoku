@@ -2,8 +2,6 @@ package avanwieringen.sudoku;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-import com.sun.tools.corba.se.idl.InvalidArgument;
-
 /**
  * A collection of cells representing the rows, columns and nonets of a Sudoku
  * @author arjan
