@@ -27,10 +27,19 @@ public class Sudoku {
 	 */
 	protected int maxValue;
 	
+	/**
+	 * The rows of the Sudoku
+	 */
 	protected CellCollection[] rows;
 	
+	/**
+	 * The columns of the Sudoku
+	 */
 	protected CellCollection[] columns;
 	
+	/**
+	 * The nonets of the Sudoku
+	 */
 	protected CellCollection[] nonets;
 
 	/**
@@ -71,13 +80,9 @@ public class Sudoku {
 		for(int i = 0; i < values.length(); i++) {
 			
 			if(i >= 0 && i < this.maxValue) {
-				try {
-					this.rows[i] 	= new CellCollection(this.maxValue, CellCollection.ROW_TYPE);
-					this.columns[i] = new CellCollection(this.maxValue, CellCollection.COLUMN_TYPE);
-					this.nonets[i] 	= new CellCollection(this.maxValue, CellCollection.NONET_TYPE);
-				} catch (InvalidArgument e) {
-					e.printStackTrace();
-				}
+				this.rows[i] 	= new CellCollection(this.maxValue, CellCollection.Type.ROW);
+				this.columns[i] = new CellCollection(this.maxValue, CellCollection.Type.COLUMN);
+				this.nonets[i] 	= new CellCollection(this.maxValue, CellCollection.Type.NONET);
 			}
 			
 			row 	= (int)(i/this.maxValue);
@@ -92,6 +97,12 @@ public class Sudoku {
 		}
 	}
 	
+	/**
+	 * Sets a value of a specified cell
+	 * @param r The row-index (0-based)
+	 * @param c The column (0-based)
+	 * @param value The value to set
+	 */
 	public void setValue(int r, int c, int value) {
 		this.cells[r][c].setValue(value);
 	}

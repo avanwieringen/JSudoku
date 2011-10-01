@@ -4,24 +4,52 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.sun.tools.corba.se.idl.InvalidArgument;
 
+/**
+ * A collection of cells representing the rows, columns and nonets of a Sudoku
+ * @author arjan
+ *
+ */
 public class CellCollection {
-
-	public static final int ROW_TYPE = 1;
-	public static final int COLUMN_TYPE = 2;
-	public static final int NONET_TYPE = 3;
 	
+	/**
+	 * Array of cell values in this collection
+	 */
 	protected Cell[] cells;
-	protected int internalCounter = 0;
-	protected int type;
 	
-	public CellCollection(int size, int type) throws InvalidArgument {
+	/**
+	 * Internal counter used for adding the cells
+	 */
+	protected int internalCounter = 0;
+	
+	/**
+	 * The type of the collection (Row, Column or Nonet)
+	 */
+	protected Type type;
+	
+	/**
+	 * Enumeration of the possible types
+	 *
+	 */
+	public enum Type {
+		ROW,
+		COLUMN,
+		NONET;
+	}
+	
+	/**
+	 * Constructs a new cell collection of specified size and type
+	 * @param size The size of the cell collection
+	 * @param type The type (Row, Column or Nonet)
+	 */
+	public CellCollection(int size, Type type) {
 		this.cells = new Cell[size];
-		if(type < 1 || type > 3) {
-			throw new InvalidArgument("Type must be CellCollection.ROW_TYPE, CellCollection.COLUMN_TYPE or CellCollection.NONET_TYPE");
-		}
 		this.type = type;
 	}
 	
+	/**
+	 * Adds a cell to the collection, where the cell is also updated such that there is a double reference
+	 * @param c The cell to add
+	 */
 	public void addCell(Cell c) {
 		if(internalCounter == this.cells.length) {
 			throw new IndexOutOfBoundsException("Cannot add more cells, limit of " + this.cells.length + " ");
@@ -29,23 +57,27 @@ public class CellCollection {
 		this.cells[internalCounter] = c;
 		
 		switch(this.type) {
-		case ROW_TYPE:
+		case ROW:
 			c.setRow(this);
 			break;
 			
-		case COLUMN_TYPE:
+		case COLUMN:
 			c.setColumn(this);
 			break;
 			
-		case NONET_TYPE:
+		case NONET:
 			c.setNonet(this);
 			break;
 		}
 		internalCounter++;
 	}
 	
+	/**
+	 * Returns whether or not a Cell is contained in this collection
+	 * @param c Cell
+	 * @return boolean
+	 */
 	public boolean contains(Cell c) {
 		return ArrayUtils.contains(this.cells, c);
 	}
-	
 }
