@@ -66,7 +66,7 @@ public class Sudoku {
 			throw new IllegalArgumentException("Values should be a String of n^2 * n^2 characters");
 		}
 		
-		// fill values and possibilities
+		// fill values and create relations
 		this.maxValue 		= (int)Math.pow(values.length(), 0.25);
 		this.cells 			= new Cell[this.maxValue][this.maxValue];
 		this.rows			= new CellCollection[this.maxValue];
@@ -95,6 +95,9 @@ public class Sudoku {
 			this.columns[column].addCell(cell);
 			this.nonets[nonet].addCell(cell);
 		}
+		
+		// calculate all possibilities
+		this.calculatePossibilities();
 	}
 	
 	/**
@@ -147,6 +150,17 @@ public class Sudoku {
 	 */
 	public int getCellCount() {
 		return (int) Math.pow(this.maxValue, 2);
+	}
+	
+	/**
+	 * Reduces all possibilities for each Cell
+	 */
+	protected void calculatePossibilities() {
+		for(int r = 0; r < this.cells.length; r++) {
+			for(int c = 0; c < this.cells[r].length; c++) {
+				this.cells[r][c].calculatePossibilities();
+			}
+		}
 	}
 	
 	/**

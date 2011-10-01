@@ -80,4 +80,12 @@ public class CellCollection {
 	public boolean contains(Cell c) {
 		return ArrayUtils.contains(this.cells, c);
 	}
+	
+	/**
+	 * Returns all Cells in this collection
+	 * @return Cell[]
+	 */
+	public Cell[] getCells() {
+		return this.cells;
+	}
 }

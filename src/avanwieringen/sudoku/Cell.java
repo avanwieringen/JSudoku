@@ -1,6 +1,8 @@
 package avanwieringen.sudoku;
 
 import java.util.Arrays;
+import java.util.Vector;
+
 import org.apache.commons.lang3.ArrayUtils;
 
 public class Cell {
@@ -31,6 +33,26 @@ public class Cell {
 	protected CellCollection nonet;
 	
 	/**
+	 * The siblings of this cell in its row
+	 */
+	protected Cell[] rowSiblings;
+	
+	/**
+	 * The siblings of this cell in its column
+	 */
+	protected Cell[] columnSiblings;
+	
+	/**
+	 * The siblings of this cell in its nonet
+	 */
+	protected Cell[] nonetSiblings;
+	
+	/**
+	 * All siblings of this cell
+	 */
+	protected Cell[] siblings;
+	
+	/**
 	 * Empty contructor creating a standard Cell with a maximum value of 9 and no value
 	 */
 	public Cell() {
@@ -54,7 +76,7 @@ public class Cell {
 			Arrays.fill(this.possibilities, true);
 		} else {
 			Arrays.fill(this.possibilities, false);
-			this.possibilities[value] = true; 
+			this.possibilities[value - 1] = true; 
 		}
 	}
 	
@@ -63,11 +85,11 @@ public class Cell {
 	 * @return Value of the cell or 0 when there are more possibilities
 	 */
 	public int getValue() {
-		return this.getOccurences(this.possibilities, true) == 1 ? ArrayUtils.indexOf(this.possibilities, true) : 0;
+		return this.getOccurences(this.possibilities, true) == 1 ? ArrayUtils.indexOf(this.possibilities, true) + 1 : 0;
 	}
 	
 	/**
-	 * Sets the value of the current cell, removing all other possibilities
+	 * Sets the value of the current cell, removing all other possibilities and updating siblings
 	 * @param value Value to set
 	 */
 	public void setValue(int value) {
@@ -75,7 +97,12 @@ public class Cell {
 			throw new IndexOutOfBoundsException("Value must be between 0 and " + this.maxValue);
 		}
 		Arrays.fill(this.possibilities, false);
-		this.possibilities[value] = true;
+		this.possibilities[value - 1] = true;
+		
+		// update all siblings
+		for(Cell c : this.getSiblings()) {
+			c.removePossibility(value);
+		}
 	}
 	
 	/**
@@ -87,11 +114,22 @@ public class Cell {
 		int currentIndex 	= 0;
 		for(int i = 0; i < this.possibilities.length; i++) {
 			if(this.possibilities[i]) {
-				possibilitiesInt[currentIndex] = i;
+				possibilitiesInt[currentIndex] = i + 1;
 				currentIndex++;
 			}
 		}
 		return possibilitiesInt;
+	}
+	
+	/**
+	 * Reduces the possibilities based on the values of all siblings
+	 */
+	public void calculatePossibilities() {
+		for (Cell c : this.getSiblings()) {
+			if(c.getValue() > 0) {
+				this.possibilities[c.getValue() - 1] = false;
+			}
+		}
 	}
 	
 	/**
@@ -102,7 +140,7 @@ public class Cell {
 		if(value <= 0 || value > this.maxValue) {
 			throw new IndexOutOfBoundsException("Value must be between 0 and " + this.maxValue);
 		}
-		this.possibilities[value] = false;
+		this.possibilities[value - 1] = false;
 	}
 	
 	/**
@@ -176,6 +214,77 @@ public class Cell {
 	 */
 	public boolean isFilled() {
 		return this.getPossibilities().length == 1;
+	}
+	
+	/**
+	 * Returns the other Cells in this row
+	 * @return Cell[]
+	 */
+	public Cell[] getRowSiblings() {
+		if(this.rowSiblings == null) {
+			this.rowSiblings = this.getSiblingsFromCollection(this.row);
+		}
+		return this.rowSiblings;
+	}
+	
+	/**
+	 * Returns the other Cells in this column
+	 * @return Cell[]
+	 */
+	public Cell[] getColumnSiblings() {
+		if(this.columnSiblings == null) {
+			this.columnSiblings = this.getSiblingsFromCollection(this.column);
+		}
+		return this.columnSiblings;
+	}
+	
+	/**
+	 * Returns the other Cells in this nonet
+	 * @return Cell[]
+	 */
+	public Cell[] getNonetSiblings() {
+		if(this.nonetSiblings == null) {
+			this.nonetSiblings = this.getSiblingsFromCollection(this.nonet);
+		}
+		return this.nonetSiblings;
+	}
+	
+	/**
+	 * Returns all siblings from this cell
+	 * @return Cell[] All siblings
+	 */
+	public Cell[] getSiblings() {
+		if(this.siblings == null) {
+			Cell[] row = this.getRowSiblings();
+			Cell[] col = this.getColumnSiblings();
+			Cell[] non = this.getNonetSiblings();
+			
+			Vector<Cell> elements = new Vector<Cell>();
+			for(int i = 0; i < row.length; i++) {
+				if(!elements.contains(row[i])) { elements.add(row[i]); }
+				if(!elements.contains(col[i])) { elements.add(col[i]); }
+				if(!elements.contains(non[i])) { elements.add(non[i]); }
+			}
+			this.siblings = (Cell[]) elements.toArray();
+		}
+		return this.siblings;
+	}
+	
+	/**
+	 * Auxiliary function to retrieve siblings from a general CellCollection
+	 * @param cc CellCollection to retrieve siblings from
+	 * @return Cell[]
+	 */
+	protected Cell[] getSiblingsFromCollection(CellCollection cc) {
+		Cell[] ret = new Cell[cc.getCells().length - 1];
+		int i = 0;
+		for (Cell c : cc.getCells()) {
+			if(!c.equals(this)) {
+				ret[i] = c;
+				i++;
+			}
+		}
+		return ret;
 	}
 	
 	/**
