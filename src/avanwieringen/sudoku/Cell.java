@@ -68,6 +68,10 @@ public class Cell {
 		this.maxValue = maxValue;
 		this.possibilities = new boolean[this.maxValue];
 		
+		if(Math.pow(this.maxValue, 0.5) != (int)Math.pow(this.maxValue, 0.5)) {
+			throw new IllegalArgumentException("MaxValue should be n^2");
+		}
+		
 		if(value < 0 || value > this.maxValue) {
 			throw new IndexOutOfBoundsException("Value must be between 0 (inclusive) and " + this.maxValue);
 		}
@@ -265,7 +269,7 @@ public class Cell {
 				if(!elements.contains(col[i])) { elements.add(col[i]); }
 				if(!elements.contains(non[i])) { elements.add(non[i]); }
 			}
-			this.siblings = (Cell[]) elements.toArray();
+			this.siblings = elements.toArray(new Cell[0]);
 		}
 		return this.siblings;
 	}
@@ -276,6 +280,9 @@ public class Cell {
 	 * @return Cell[]
 	 */
 	protected Cell[] getSiblingsFromCollection(CellCollection cc) {
+		if(cc == null) {
+			return new Cell[0];
+		}
 		Cell[] ret = new Cell[cc.getCells().length - 1];
 		int i = 0;
 		for (Cell c : cc.getCells()) {
