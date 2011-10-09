@@ -6,6 +6,7 @@ import org.junit.Test;
 
 public class CellTest {
 	
+	
 	@Test
 	public void constructorDefault_1() {
 		Cell c = new Cell();

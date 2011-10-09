@@ -5,8 +5,13 @@ import java.util.Vector;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-public class Cell {
+public class Cell implements Cloneable {
 
+	/**
+	 * The value of the cell
+	 */
+	protected int value;
+	
 	/**
 	 * The maximum value of a cell
 	 */
@@ -67,6 +72,7 @@ public class Cell {
 	public Cell(int value, int maxValue) {
 		this.maxValue = maxValue;
 		this.possibilities = new boolean[this.maxValue];
+		this.value = value;
 		
 		if(Math.pow(this.maxValue, 0.5) != (int)Math.pow(this.maxValue, 0.5)) {
 			throw new IllegalArgumentException("MaxValue should be n^2");
@@ -89,7 +95,8 @@ public class Cell {
 	 * @return Value of the cell or 0 when there are more possibilities
 	 */
 	public int getValue() {
-		return this.getOccurences(this.possibilities, true) == 1 ? ArrayUtils.indexOf(this.possibilities, true) + 1 : 0;
+		//return this.getOccurences(this.possibilities, true) == 1 ? ArrayUtils.indexOf(this.possibilities, true) + 1 : 0;
+		return this.value;
 	}
 	
 	/**
@@ -97,15 +104,26 @@ public class Cell {
 	 * @param value Value to set
 	 */
 	public void setValue(int value) {
-		if(value <= 0 || value > this.maxValue) {
+		if(value < 0 || value > this.maxValue) {
 			throw new IndexOutOfBoundsException("Value must be between 0 and " + this.maxValue);
 		}
-		Arrays.fill(this.possibilities, false);
-		this.possibilities[value - 1] = true;
 		
-		// update all siblings
-		for(Cell c : this.getSiblings()) {
-			c.removePossibility(value);
+		if(value==0) {
+			this.calculatePossibilities();
+		} else {
+			if(!this.possibilities[value - 1]) {
+				throw new IndexOutOfBoundsException("Value " + value + " is no longer possible for this cell");
+			}
+			Arrays.fill(this.possibilities, false);
+			this.possibilities[value - 1] = true;
+			this.value = value;
+			
+			// update all siblings
+			//if(this.siblings != null) {
+				for(Cell c : this.getSiblings()) {
+					c.removePossibility(value);
+				}
+			//}
 		}
 	}
 	
@@ -217,7 +235,8 @@ public class Cell {
 	 * @return boolean
 	 */
 	public boolean isFilled() {
-		return this.getPossibilities().length == 1;
+		//return this.getPossibilities().length == 1;
+		return this.value > 0;
 	}
 	
 	/**
@@ -229,6 +248,7 @@ public class Cell {
 			this.rowSiblings = this.getSiblingsFromCollection(this.row);
 		}
 		return this.rowSiblings;
+		//return this.getSiblingsFromCollection(this.row);
 	}
 	
 	/**
@@ -240,6 +260,7 @@ public class Cell {
 			this.columnSiblings = this.getSiblingsFromCollection(this.column);
 		}
 		return this.columnSiblings;
+		//return this.getSiblingsFromCollection(this.column);
 	}
 	
 	/**
@@ -251,6 +272,7 @@ public class Cell {
 			this.nonetSiblings = this.getSiblingsFromCollection(this.nonet);
 		}
 		return this.nonetSiblings;
+		//return this.getSiblingsFromCollection(this.nonet);
 	}
 	
 	/**
@@ -270,6 +292,7 @@ public class Cell {
 				if(!elements.contains(non[i])) { elements.add(non[i]); }
 			}
 			this.siblings = elements.toArray(new Cell[0]);
+			return elements.toArray(new Cell[0]);
 		}
 		return this.siblings;
 	}
@@ -309,4 +332,11 @@ public class Cell {
 		}
 		return count;
 	}
+	
+	/**
+	 * CLones the Cell
+	 */
+	public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

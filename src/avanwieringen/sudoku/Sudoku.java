@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author arjan
  *
  */
-public class Sudoku {
+public class Sudoku implements Cloneable {
 	
 	/**
 	 * Values of the Sudoku
@@ -35,6 +35,11 @@ public class Sudoku {
 	 * The nonets of the Sudoku
 	 */
 	protected CellCollection[] nonets;
+	
+	/**
+	 * 
+	 */
+	protected boolean possibilitiesReduced = false;
 
 	/**
 	 * Construct an empty 9^2 * 9^2 Sudoku
@@ -61,7 +66,7 @@ public class Sudoku {
 		}
 		
 		// fill values and create relations
-		this.maxValue 		= (int)Math.pow(values.length(), 0.25);
+		this.maxValue 		= (int)Math.pow(values.length(), 0.5);
 		this.cells 			= new Cell[this.maxValue][this.maxValue];
 		this.rows			= new CellCollection[this.maxValue];
 		this.columns 		= new CellCollection[this.maxValue];
@@ -71,6 +76,8 @@ public class Sudoku {
 		int column;
 		int nonet;
 		Cell cell;
+		
+		// create relations
 		for(int i = 0; i < values.length(); i++) {
 			
 			if(i >= 0 && i < this.maxValue) {
@@ -84,16 +91,23 @@ public class Sudoku {
 			nonet  	= (int) (((int)(row/Math.sqrt(this.maxValue)) * Math.sqrt(this.maxValue)) + ((int)(column / Math.sqrt(this.maxValue))));
 			cell    = new Cell();
 			this.cells[row][column] = cell;
-			this.setValue(row, column, this.parseValue(values.charAt(i)));			
 			this.rows[row].addCell(cell);
 			this.columns[column].addCell(cell);
 			this.nonets[nonet].addCell(cell);
 		}
 		
+		// fill values
+		for(int i = 0; i < values.length(); i++) {
+			row 	= (int)(i/this.maxValue);
+			column 	= (int)(i%this.maxValue);
+			nonet  	= (int) (((int)(row/Math.sqrt(this.maxValue)) * Math.sqrt(this.maxValue)) + ((int)(column / Math.sqrt(this.maxValue))));
+			this.setValue(row, column, this.parseValue(values.charAt(i)));
+		}
+		
 		// calculate all possibilities
-		this.calculatePossibilities();
+		//this.reducePossibilities();
 	}
-	
+
 	/**
 	 * Sets a value of a specified cell
 	 * @param r The row-index (0-based)
@@ -111,7 +125,44 @@ public class Sudoku {
 	 * @return Value
 	 */
 	public int getValue(int r, int c) {
-		return this.cells[r][c].getValue();
+		return getCell(r, c).getValue();
+	}
+	
+	/**
+	 * Returns the Cell belonging to the specified row and column (0-based)
+	 * @param r Row-index 0-based
+	 * @param c Column-index 0-based
+	 * @return Cell
+	 */
+	public Cell getCell(int r, int c) {
+		return this.cells[r][c];
+	}
+	
+	/**
+	 * Returns the row CellCollection belonging to the specified row-index (0-based)
+	 * @param r Row-index 0-based
+	 * @return CellCollection
+	 */
+	public CellCollection getRow(int r) {
+		return this.rows[r];
+	}
+	
+	/**
+	 * Returns the column CellCollection belonging to the specified column-index (0-based)
+	 * @param r column-index 0-based
+	 * @return CellCollection
+	 */
+	public CellCollection getColumn(int c) {
+		return this.columns[c];
+	}
+	
+	/**
+	 * Returns the nonet CellCollection belonging to the specified nonet-index (0-based)
+	 * @param r Nonet-index 0-based
+	 * @return CellCollection
+	 */
+	public CellCollection getNonet(int n) {
+		return this.nonets[n];
 	}
 	
 	/**
@@ -147,14 +198,58 @@ public class Sudoku {
 	}
 	
 	/**
+	 * Returns an array with all the current possibilities of a cell
+	 * @return array with possibilities
+	 */
+	public int[] getPossibilities(int r, int c) {
+		return this.getCell(r, c).getPossibilities();
+	}
+	
+	/**
+	 * Returns wether or not the Sudoku is solvable
+	 * @return boolean solvable
+	 */
+	public boolean isValid() {
+		for(int r = 0; r < this.getRowCount(); r++) {
+			for(int c = 0; c < this.getColumnCount(); c++) {
+				if(!this.getCell(r, c).isValid()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Returns wether or not the Sudoku is solved
+	 * @return boolean solved
+	 */
+	public boolean isSolved() {
+		for(int r = 0; r < this.getRowCount(); r++) {
+			for(int c = 0; c < this.getColumnCount(); c++) {
+				//if(this.getCell(r, c).getPossibilities().length > 1) {
+				if(!this.getCell(r, c).isFilled()) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
 	 * Reduces all possibilities for each Cell
 	 */
-	protected void calculatePossibilities() {
+	public void reducePossibilities() {
 		for(int r = 0; r < this.cells.length; r++) {
 			for(int c = 0; c < this.cells[r].length; c++) {
 				this.cells[r][c].calculatePossibilities();
 			}
 		}
+		this.possibilitiesReduced = true;
+	}
+	
+	public boolean possibilitiesReduced() {
+		return this.possibilitiesReduced;
 	}
 	
 	/**
@@ -182,4 +277,11 @@ public class Sudoku {
 		}
 		return value;
 	}
+	
+	/**
+	 * Clones the Sudoku
+	 */
+	public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }

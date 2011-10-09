@@ -7,7 +7,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author arjan
  *
  */
-public class CellCollection {
+public class CellCollection implements Cloneable {
 	
 	/**
 	 * Array of cell values in this collection
@@ -49,25 +49,25 @@ public class CellCollection {
 	 * @param c The cell to add
 	 */
 	public void addCell(Cell c) {
-		if(internalCounter == this.cells.length) {
+		if(this.internalCounter == this.cells.length) {
 			throw new IndexOutOfBoundsException("Cannot add more cells, limit of " + this.cells.length + " ");
 		}
-		this.cells[internalCounter] = c;
+		this.cells[this.internalCounter] = c;
 		
 		switch(this.type) {
-		case ROW:
-			c.setRow(this);
-			break;
-			
-		case COLUMN:
-			c.setColumn(this);
-			break;
-			
-		case NONET:
-			c.setNonet(this);
-			break;
+			case ROW:
+				c.setRow(this);
+				break;
+				
+			case COLUMN:
+				c.setColumn(this);
+				break;
+				
+			case NONET:
+				c.setNonet(this);
+				break;
 		}
-		internalCounter++;
+		this.internalCounter += 1;
 	}
 	
 	/**
@@ -86,4 +86,26 @@ public class CellCollection {
 	public Cell[] getCells() {
 		return this.cells;
 	}
+	
+	/**
+	 * Returns the value belonging to the specified index (0-based)
+	 * @param i Index 0-based
+	 * @return Value
+	 */
+	public int getValue(int i) {
+		return getCell(i).getValue();
+	}
+	
+	/**
+	 * Returns the Cell belonging to the specified index (0-based)
+	 * @param i Index 0-based
+	 * @return Cell
+	 */
+	public Cell getCell(int i) {
+		return this.cells[i];
+	}
+	
+	public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
 }
