@@ -3,13 +3,16 @@ package avanwieringen.sudoku.solver.strategy;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.rits.cloning.Cloner;
 import com.sun.tools.javac.util.Pair;
 
 import avanwieringen.sudoku.Cell;
 import avanwieringen.sudoku.Sudoku;
 
 public class SimpleLogicStrategy implements StrategyInterface {
-
+	
+	Cloner cloner = new Cloner();
+	
 	/**
 	 * Uses simple logic do distinguish which cells have only 1 option
 	 */
@@ -30,11 +33,7 @@ public class SimpleLogicStrategy implements StrategyInterface {
 		
 		if(steps.size() > 0) {
 			Sudoku[] solution = new Sudoku[1];
-			try {
-				solution[0] = (Sudoku) s.clone();
-			} catch (CloneNotSupportedException e) {
-				e.printStackTrace();
-			}
+			solution[0]   = cloner.deepClone(s);
 			for(Map.Entry<Pair<Integer, Integer>, Integer> entry : steps.entrySet()) {
 				//System.out.println("Setting " + entry.getKey().fst + "," + entry.getKey().snd + ":" + entry.getValue());
 				try {

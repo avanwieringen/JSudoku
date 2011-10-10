@@ -1,16 +1,15 @@
 package avanwieringen.sudoku.solver.strategy;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
-import com.sun.tools.javac.util.Pair;
+import com.rits.cloning.Cloner;
 
 import avanwieringen.sudoku.Cell;
 import avanwieringen.sudoku.Sudoku;
 
 public class BruteForceStrategy implements StrategyInterface {
 
+	Cloner cloner = new Cloner();
 	/**
 	 * Determines which cells have the least amount of choices and creates possible solutions using these steps
 	 */
@@ -18,6 +17,7 @@ public class BruteForceStrategy implements StrategyInterface {
 		int currentMin = (int) Math.sqrt(s.getCellCount()) + 1;
 		Vector<int[]> possibleSteps = new Vector<int[]>();
 		
+		// gets the cell with the least amount of possibilities
 		int[] possibilities;
 		Cell currentCell;
 		for(int r = 0; r < s.getRowCount(); r++) {
@@ -37,20 +37,14 @@ public class BruteForceStrategy implements StrategyInterface {
 			}
 		}
 		
-		System.out.println(possibleSteps.size() + ":");
+		// perform those steps
 		if(possibleSteps.size() > 0) {
 			Sudoku[] solutions = new Sudoku[possibleSteps.size()];
 			int i = 0;
 			for(int[] poss : possibleSteps) {
-				try {
-					solutions[i] = (Sudoku) s.clone();
-					System.out.println("Current cell value: " + solutions[i].getValue(poss[0], poss[1]));
-					System.out.println(i + ": " + poss[0] + "," + poss[1] + ":" + poss[2]);
+					solutions[i] = cloner.deepClone(s);
 					solutions[i].setValue(poss[0], poss[1], poss[2]);
-				} catch (CloneNotSupportedException e) {
-					e.printStackTrace();
-				}
-				i++;
+					i++;
 			}
 			return solutions;
 		} else {
