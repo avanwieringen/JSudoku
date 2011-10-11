@@ -143,6 +143,11 @@ public class Cell {
 		return possibilitiesInt;
 	}
 	
+	public boolean hasCandidate(int candidate) {
+		if(this.isFilled()) { return false; }
+		return this.candidates[candidate - 1];
+	}
+	
 	/**
 	 * Reduces the candidates based on the values of all siblings
 	 */

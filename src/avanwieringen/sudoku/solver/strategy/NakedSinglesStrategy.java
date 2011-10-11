@@ -14,7 +14,7 @@ public class NakedSinglesStrategy implements StrategyInterface {
 	Cloner cloner = new Cloner();
 	
 	/**
-	 * Finds the hidden singles and fills them
+	 * Finds the naked singles and fills them
 	 */
 	public Sudoku[] solve(Sudoku s) {	
 		HashMap<Pair<Integer, Integer>, Integer> steps = new HashMap<Pair<Integer,Integer>, Integer>();

@@ -136,7 +136,15 @@ public class Sudoku {
 	}
 	
 	/**
-	 * Returns the row CellCollection belonging to the specified row-index (0-based)
+	 * Returns the row count
+	 * @return Row count
+	 */
+	public int getRowCount() {
+		return this.maxValue;
+	}
+	
+	/**
+	 * Returns the row House belonging to the specified row-index (0-based)
 	 * @param r Row-index 0-based
 	 * @return CellCollection
 	 */
@@ -145,29 +153,11 @@ public class Sudoku {
 	}
 	
 	/**
-	 * Returns the column CellCollection belonging to the specified column-index (0-based)
-	 * @param r column-index 0-based
-	 * @return CellCollection
+	 * Return the rows of this Sudoku
+	 * @return House Array
 	 */
-	public House getColumn(int c) {
-		return this.columns[c];
-	}
-	
-	/**
-	 * Returns the box CellCollection belonging to the specified box-index (0-based)
-	 * @param r Box-index 0-based
-	 * @return CellCollection
-	 */
-	public House getBox(int n) {
-		return this.boxes[n];
-	}
-	
-	/**
-	 * Returns the row count
-	 * @return Row count
-	 */
-	public int getRowCount() {
-		return this.maxValue;
+	public House[] getRows() {
+		return this.rows;
 	}
 	
 	/**
@@ -179,11 +169,45 @@ public class Sudoku {
 	}
 	
 	/**
+	 * Returns the column House belonging to the specified column-index (0-based)
+	 * @param r column-index 0-based
+	 * @return CellCollection
+	 */
+	public House getColumn(int c) {
+		return this.columns[c];
+	}
+	
+	/**
+	 * Return the columns of this Sudoku
+	 * @return House Array
+	 */
+	public House[] getColumns() {
+		return this.columns;
+	}
+	
+	/**
 	 * Returns the box count
 	 * @return Box count
 	 */
 	public int getBoxCount() {
 		return this.maxValue;
+	}
+	
+	/**
+	 * Returns the box House belonging to the specified box-index (0-based)
+	 * @param r Box-index 0-based
+	 * @return CellCollection
+	 */
+	public House getBox(int n) {
+		return this.boxes[n];
+	}
+	
+	/**
+	 * Return the boxes of this Sudoku
+	 * @return House Array
+	 */
+	public House[] getBoxes() {
+		return this.boxes;
 	}
 	
 	/**
@@ -252,7 +276,7 @@ public class Sudoku {
 	/**
 	 * Reduces all possibilities for each Cell
 	 */
-	public void reducePossibilities() {
+	/**public void reducePossibilities() {
 		for(int r = 0; r < this.cells.length; r++) {
 			for(int c = 0; c < this.cells[r].length; c++) {
 				this.cells[r][c].calculateCandidates();
@@ -263,7 +287,7 @@ public class Sudoku {
 	
 	public boolean possibilitiesReduced() {
 		return this.possibilitiesReduced;
-	}
+	}**/
 	
 	/**
 	 * Parses a char value to the corresponding integer value, counting '.', '0', ' ', '-' and'x' as empty values

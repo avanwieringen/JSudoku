@@ -53,14 +53,14 @@ public class Solver {
 		Sudoku[] solutions;
 		SolverResult childResult;
 		for (StrategyInterface strategy : this.strategies) {
-			System.out.println("Using solver " + strategy.getClass().getName());
+			System.out.println("[Level " + String.valueOf(level) + "] Using solver " + strategy.getClass().getSimpleName());
 			
 			solutions = strategy.solve(s);
 			if(solutions.length > 0) {
 				for (Sudoku solution : solutions) {
 					if(solution.isSolved()) return new SolverResult(solution, SolverResult.Type.SOLVED);
 					if(solution.isValid()) {
-						System.out.println("Level " + level + "\n" + (new StringRenderer()).render(solution));
+						//System.out.println("Level " + level + "\n" + (new StringRenderer()).render(solution));
 						childResult = this.iterate(solution, level++);
 						if(childResult.getResult().equals(SolverResult.Type.SOLVED)) {
 							return childResult;

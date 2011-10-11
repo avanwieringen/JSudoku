@@ -5,7 +5,6 @@ import java.util.Map.Entry;
 import java.util.Vector;
 
 import com.rits.cloning.Cloner;
-import com.sun.tools.javac.util.List;
 
 import avanwieringen.sudoku.Cell;
 import avanwieringen.sudoku.House;
