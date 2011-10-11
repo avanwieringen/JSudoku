@@ -9,12 +9,12 @@ import com.sun.tools.javac.util.Pair;
 import avanwieringen.sudoku.Cell;
 import avanwieringen.sudoku.Sudoku;
 
-public class SimpleLogicStrategy implements StrategyInterface {
+public class NakedSinglesStrategy implements StrategyInterface {
 	
 	Cloner cloner = new Cloner();
 	
 	/**
-	 * Uses simple logic do distinguish which cells have only 1 option
+	 * Finds the hidden singles and fills them
 	 */
 	public Sudoku[] solve(Sudoku s) {	
 		HashMap<Pair<Integer, Integer>, Integer> steps = new HashMap<Pair<Integer,Integer>, Integer>();
@@ -24,8 +24,8 @@ public class SimpleLogicStrategy implements StrategyInterface {
 				currentCell = s.getCell(r, c);
 				if(!currentCell.isValid()) { return new Sudoku[0]; }
 				if(!currentCell.isFilled()) {
-					if(currentCell.getPossibilities().length==1) {;
-						steps.put(new Pair<Integer, Integer>(r, c), currentCell.getPossibilities()[0]);
+					if(currentCell.getCandidates().length==1) {;
+						steps.put(new Pair<Integer, Integer>(r, c), currentCell.getCandidates()[0]);
 					}
 				}
 			}
@@ -35,9 +35,8 @@ public class SimpleLogicStrategy implements StrategyInterface {
 			Sudoku[] solution = new Sudoku[1];
 			solution[0]   = cloner.deepClone(s);
 			for(Map.Entry<Pair<Integer, Integer>, Integer> entry : steps.entrySet()) {
-				//System.out.println("Setting " + entry.getKey().fst + "," + entry.getKey().snd + ":" + entry.getValue());
 				try {
-				solution[0].setValue(entry.getKey().fst, entry.getKey().snd, entry.getValue());
+					solution[0].setValue(entry.getKey().fst, entry.getKey().snd, entry.getValue());
 				} catch(IndexOutOfBoundsException e){
 					return new Sudoku[0];
 				}

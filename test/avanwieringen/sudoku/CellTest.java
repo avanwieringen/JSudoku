@@ -44,14 +44,14 @@ public class CellTest {
 	@Test
 	public void getPossibilities_1() {
 		Cell c = new Cell(0,9);
-		assertEquals(9, c.getPossibilities().length);
+		assertEquals(9, c.getCandidates().length);
 	}
 	
 	@Test
 	public void getPossibilities_2() {
 		Cell c = new Cell(0,9);
 		c.setValue(3);
-		assertEquals(1, c.getPossibilities().length);
+		assertEquals(1, c.getCandidates().length);
 	}
 	
 }

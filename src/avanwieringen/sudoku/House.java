@@ -7,7 +7,7 @@ import org.apache.commons.lang3.ArrayUtils;
  * @author arjan
  *
  */
-public class CellCollection implements Cloneable {
+public class House {
 	
 	/**
 	 * Array of cell values in this collection
@@ -31,7 +31,7 @@ public class CellCollection implements Cloneable {
 	public enum Type {
 		ROW,
 		COLUMN,
-		NONET;
+		BOX;
 	}
 	
 	/**
@@ -39,7 +39,7 @@ public class CellCollection implements Cloneable {
 	 * @param size The size of the cell collection
 	 * @param type The type (Row, Column or Nonet)
 	 */
-	public CellCollection(int size, Type type) {
+	public House(int size, Type type) {
 		this.cells = new Cell[size];
 		this.type = type;
 	}
@@ -63,8 +63,8 @@ public class CellCollection implements Cloneable {
 				c.setColumn(this);
 				break;
 				
-			case NONET:
-				c.setNonet(this);
+			case BOX:
+				c.setBox(this);
 				break;
 		}
 		this.internalCounter += 1;
@@ -104,8 +104,4 @@ public class CellCollection implements Cloneable {
 	public Cell getCell(int i) {
 		return this.cells[i];
 	}
-	
-	public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 }

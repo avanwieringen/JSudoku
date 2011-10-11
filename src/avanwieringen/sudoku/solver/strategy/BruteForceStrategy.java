@@ -25,7 +25,7 @@ public class BruteForceStrategy implements StrategyInterface {
 				currentCell = s.getCell(r, c);
 				if(!currentCell.isValid()) { return new Sudoku[0]; }
 				if(!currentCell.isFilled()) {
-					possibilities = currentCell.getPossibilities();
+					possibilities = currentCell.getCandidates();
 					if(possibilities.length < currentMin && possibilities.length > 1) {
 						currentMin = possibilities.length;
 						possibleSteps.clear();

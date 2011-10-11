@@ -9,7 +9,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author arjan
  *
  */
-public class Sudoku implements Cloneable {
+public class Sudoku {
 	
 	/**
 	 * Values of the Sudoku
@@ -17,24 +17,24 @@ public class Sudoku implements Cloneable {
 	protected Cell[][] cells;
 	
 	/**
-	 * The maximum value of a cell (equal to the row-, column- and nonet count)
+	 * The maximum value of a cell (equal to the row-, column- and box count)
 	 */
 	protected int maxValue;
 	
 	/**
 	 * The rows of the Sudoku
 	 */
-	protected CellCollection[] rows;
+	protected House[] rows;
 	
 	/**
 	 * The columns of the Sudoku
 	 */
-	protected CellCollection[] columns;
+	protected House[] columns;
 	
 	/**
-	 * The nonets of the Sudoku
+	 * The boxes of the Sudoku
 	 */
-	protected CellCollection[] nonets;
+	protected House[] boxes;
 	
 	/**
 	 * 
@@ -68,44 +68,41 @@ public class Sudoku implements Cloneable {
 		// fill values and create relations
 		this.maxValue 		= (int)Math.pow(values.length(), 0.5);
 		this.cells 			= new Cell[this.maxValue][this.maxValue];
-		this.rows			= new CellCollection[this.maxValue];
-		this.columns 		= new CellCollection[this.maxValue];
-		this.nonets 		= new CellCollection[this.maxValue];
+		this.rows			= new House[this.maxValue];
+		this.columns 		= new House[this.maxValue];
+		this.boxes 		= new House[this.maxValue];
 		
 		int row;
 		int column;
-		int nonet;
+		int box;
 		Cell cell;
 		
 		// create relations
 		for(int i = 0; i < values.length(); i++) {
 			
 			if(i >= 0 && i < this.maxValue) {
-				this.rows[i] 	= new CellCollection(this.maxValue, CellCollection.Type.ROW);
-				this.columns[i] = new CellCollection(this.maxValue, CellCollection.Type.COLUMN);
-				this.nonets[i] 	= new CellCollection(this.maxValue, CellCollection.Type.NONET);
+				this.rows[i] 	= new House(this.maxValue, House.Type.ROW);
+				this.columns[i] = new House(this.maxValue, House.Type.COLUMN);
+				this.boxes[i] 	= new House(this.maxValue, House.Type.BOX);
 			}
 			
 			row 	= (int)(i/this.maxValue);
 			column 	= (int)(i%this.maxValue);
-			nonet  	= (int) (((int)(row/Math.sqrt(this.maxValue)) * Math.sqrt(this.maxValue)) + ((int)(column / Math.sqrt(this.maxValue))));
+			box  	= (int) (((int)(row/Math.sqrt(this.maxValue)) * Math.sqrt(this.maxValue)) + ((int)(column / Math.sqrt(this.maxValue))));
 			cell    = new Cell();
 			this.cells[row][column] = cell;
 			this.rows[row].addCell(cell);
 			this.columns[column].addCell(cell);
-			this.nonets[nonet].addCell(cell);
+			this.boxes[box].addCell(cell);
 		}
 		
 		// fill values
 		for(int i = 0; i < values.length(); i++) {
 			row 	= (int)(i/this.maxValue);
 			column 	= (int)(i%this.maxValue);
-			nonet  	= (int) (((int)(row/Math.sqrt(this.maxValue)) * Math.sqrt(this.maxValue)) + ((int)(column / Math.sqrt(this.maxValue))));
+			box  	= (int) (((int)(row/Math.sqrt(this.maxValue)) * Math.sqrt(this.maxValue)) + ((int)(column / Math.sqrt(this.maxValue))));
 			this.setValue(row, column, this.parseValue(values.charAt(i)));
 		}
-		
-		// calculate all possibilities
-		//this.reducePossibilities();
 	}
 
 	/**
@@ -143,7 +140,7 @@ public class Sudoku implements Cloneable {
 	 * @param r Row-index 0-based
 	 * @return CellCollection
 	 */
-	public CellCollection getRow(int r) {
+	public House getRow(int r) {
 		return this.rows[r];
 	}
 	
@@ -152,17 +149,17 @@ public class Sudoku implements Cloneable {
 	 * @param r column-index 0-based
 	 * @return CellCollection
 	 */
-	public CellCollection getColumn(int c) {
+	public House getColumn(int c) {
 		return this.columns[c];
 	}
 	
 	/**
-	 * Returns the nonet CellCollection belonging to the specified nonet-index (0-based)
-	 * @param r Nonet-index 0-based
+	 * Returns the box CellCollection belonging to the specified box-index (0-based)
+	 * @param r Box-index 0-based
 	 * @return CellCollection
 	 */
-	public CellCollection getNonet(int n) {
-		return this.nonets[n];
+	public House getBox(int n) {
+		return this.boxes[n];
 	}
 	
 	/**
@@ -182,10 +179,10 @@ public class Sudoku implements Cloneable {
 	}
 	
 	/**
-	 * Returns the nonet count
-	 * @return Nonet count
+	 * Returns the box count
+	 * @return Box count
 	 */
-	public int getNonetCount() {
+	public int getBoxCount() {
 		return this.maxValue;
 	}
 	
@@ -198,11 +195,27 @@ public class Sudoku implements Cloneable {
 	}
 	
 	/**
+	 * Calculates the filled cells
+	 * @return Filled Cell count
+	 */
+	public int getFilledCells() {
+		int i = 0;
+		for(int r = 0; r < this.getRowCount(); r++) {
+			for(int c = 0; c < this.getColumnCount(); c++) {
+				if(this.getCell(r, c).isFilled()) {
+					i++;
+				}
+			}
+		}
+		return i;
+	}
+	
+	/**
 	 * Returns an array with all the current possibilities of a cell
 	 * @return array with possibilities
 	 */
 	public int[] getPossibilities(int r, int c) {
-		return this.getCell(r, c).getPossibilities();
+		return this.getCell(r, c).getCandidates();
 	}
 	
 	/**
@@ -242,7 +255,7 @@ public class Sudoku implements Cloneable {
 	public void reducePossibilities() {
 		for(int r = 0; r < this.cells.length; r++) {
 			for(int c = 0; c < this.cells[r].length; c++) {
-				this.cells[r][c].calculatePossibilities();
+				this.cells[r][c].calculateCandidates();
 			}
 		}
 		this.possibilitiesReduced = true;
@@ -277,11 +290,4 @@ public class Sudoku implements Cloneable {
 		}
 		return value;
 	}
-	
-	/**
-	 * Clones the Sudoku
-	 */
-	public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 }

@@ -5,7 +5,7 @@ import java.util.Vector;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-public class Cell implements Cloneable {
+public class Cell {
 
 	/**
 	 * The value of the cell
@@ -20,42 +20,42 @@ public class Cell implements Cloneable {
 	/**
 	 * A boolean array indicating which values are still possible
 	 */
-	protected boolean[] possibilities;
+	protected boolean[] candidates;
 	
 	/** 
 	 * The row to which this cell belongs
 	 */
-	protected CellCollection row;
+	protected House row;
 	
 	/**
 	 * The column to which this cell belongs
 	 */
-	protected CellCollection column;
+	protected House column;
 	
 	/**
-	 * The nonet to which this cell belongs
+	 * The box to which this cell belongs
 	 */
-	protected CellCollection nonet;
+	protected House box;
 	
 	/**
-	 * The siblings of this cell in its row
+	 * The peers of this cell in its row
 	 */
-	protected Cell[] rowSiblings;
+	protected Cell[] rowPeers;
 	
 	/**
-	 * The siblings of this cell in its column
+	 * The peers of this cell in its column
 	 */
-	protected Cell[] columnSiblings;
+	protected Cell[] columnPeers;
 	
 	/**
-	 * The siblings of this cell in its nonet
+	 * The peers of this cell in its box
 	 */
-	protected Cell[] nonetSiblings;
+	protected Cell[] boxPeers;
 	
 	/**
-	 * All siblings of this cell
+	 * All peers of this cell
 	 */
-	protected Cell[] siblings;
+	protected Cell[] peers;
 	
 	/**
 	 * Empty contructor creating a standard Cell with a maximum value of 9 and no value
@@ -71,7 +71,7 @@ public class Cell implements Cloneable {
 	 */
 	public Cell(int value, int maxValue) {
 		this.maxValue = maxValue;
-		this.possibilities = new boolean[this.maxValue];
+		this.candidates = new boolean[this.maxValue];
 		this.value = value;
 		
 		if(Math.pow(this.maxValue, 0.5) != (int)Math.pow(this.maxValue, 0.5)) {
@@ -83,10 +83,10 @@ public class Cell implements Cloneable {
 		}
 		
 		if(value == 0) {
-			Arrays.fill(this.possibilities, true);
+			Arrays.fill(this.candidates, true);
 		} else {
-			Arrays.fill(this.possibilities, false);
-			this.possibilities[value - 1] = true; 
+			Arrays.fill(this.candidates, false);
+			this.candidates[value - 1] = true; 
 		}
 	}
 	
@@ -109,18 +109,18 @@ public class Cell implements Cloneable {
 		}
 		
 		if(value==0) {
-			this.calculatePossibilities();
+			this.calculateCandidates();
 		} else {
-			if(!this.possibilities[value - 1]) {
+			if(!this.candidates[value - 1]) {
 				throw new IndexOutOfBoundsException("Value " + value + " is no longer possible for this cell");
 			}
-			Arrays.fill(this.possibilities, false);
-			this.possibilities[value - 1] = true;
+			Arrays.fill(this.candidates, false);
+			this.candidates[value - 1] = true;
 			this.value = value;
 			
-			// update all siblings
+			// update all peers
 			//if(this.siblings != null) {
-				for(Cell c : this.getSiblings()) {
+				for(Cell c : this.getPeers()) {
 					c.removePossibility(value);
 				}
 			//}
@@ -128,14 +128,14 @@ public class Cell implements Cloneable {
 	}
 	
 	/**
-	 * Returns an array with all the current possibilities of the cell
-	 * @return array with possibilities
+	 * Returns an array with all the current candidates of the cell
+	 * @return array with candidates
 	 */
-	public int[] getPossibilities() {
-		int[] possibilitiesInt 	= new int[this.getOccurences(this.possibilities, true)];
+	public int[] getCandidates() {
+		int[] possibilitiesInt 	= new int[this.getOccurences(this.candidates, true)];
 		int currentIndex 	= 0;
-		for(int i = 0; i < this.possibilities.length; i++) {
-			if(this.possibilities[i]) {
+		for(int i = 0; i < this.candidates.length; i++) {
+			if(this.candidates[i]) {
 				possibilitiesInt[currentIndex] = i + 1;
 				currentIndex++;
 			}
@@ -144,12 +144,12 @@ public class Cell implements Cloneable {
 	}
 	
 	/**
-	 * Reduces the possibilities based on the values of all siblings
+	 * Reduces the candidates based on the values of all siblings
 	 */
-	public void calculatePossibilities() {
-		for (Cell c : this.getSiblings()) {
+	public void calculateCandidates() {
+		for (Cell c : this.getPeers()) {
 			if(c.getValue() > 0) {
-				this.possibilities[c.getValue() - 1] = false;
+				this.candidates[c.getValue() - 1] = false;
 			}
 		}
 	}
@@ -162,14 +162,14 @@ public class Cell implements Cloneable {
 		if(value <= 0 || value > this.maxValue) {
 			throw new IndexOutOfBoundsException("Value must be between 0 and " + this.maxValue);
 		}
-		this.possibilities[value - 1] = false;
+		this.candidates[value - 1] = false;
 	}
 	
 	/**
 	 * Sets the row to which this cell belongs
 	 * @param row
 	 */
-	public void setRow(CellCollection row) {
+	public void setRow(House row) {
 		this.row = row;
 		if(!this.row.contains(this)) {
 			this.row.addCell(this);
@@ -180,7 +180,7 @@ public class Cell implements Cloneable {
 	 * Sets the column to which this cell belongs
 	 * @param column
 	 */
-	public void setColumn(CellCollection col) {
+	public void setColumn(House col) {
 		this.column = col;
 		if(!this.column.contains(this)) {
 			this.column.addCell(this);
@@ -189,12 +189,12 @@ public class Cell implements Cloneable {
 	
 	/**
 	 * Sets the nonet to which this cell belongs
-	 * @param nonet
+	 * @param box
 	 */
-	public void setNonet(CellCollection non) {
-		this.nonet = non;
-		if(!this.nonet.contains(this)) {
-			this.nonet.addCell(this);
+	public void setBox(House non) {
+		this.box = non;
+		if(!this.box.contains(this)) {
+			this.box.addCell(this);
 		}
 	}
 	
@@ -202,7 +202,7 @@ public class Cell implements Cloneable {
 	 * Gets the row to which this cell belongs
 	 * @return CellCollection
 	 */
-	public CellCollection getRow() {
+	public House getRow() {
 		return this.row;
 	}
 	
@@ -210,16 +210,16 @@ public class Cell implements Cloneable {
 	 * Gets the column to which this cell belongs
 	 * @return CellCollection
 	 */
-	public CellCollection getColumn() {
+	public House getColumn() {
 		return this.column;
 	}
 	
 	/**
-	 * Gets the nonet to which this cell belongs
+	 * Gets the box to which this cell belongs
 	 * @return CellCollection
 	 */
-	public CellCollection getNonet() {
-		return this.nonet;
+	public House getBox() {
+		return this.box;
 	}
 	
 	/**
@@ -227,7 +227,7 @@ public class Cell implements Cloneable {
 	 * @return boolean
 	 */
 	public boolean isValid() {
-		return this.getPossibilities().length > 0;
+		return this.getCandidates().length > 0;
 	}
 	
 	/**
@@ -243,11 +243,11 @@ public class Cell implements Cloneable {
 	 * Returns the other Cells in this row
 	 * @return Cell[]
 	 */
-	public Cell[] getRowSiblings() {
-		if(this.rowSiblings == null) {
-			this.rowSiblings = this.getSiblingsFromCollection(this.row);
+	public Cell[] getRowPeers() {
+		if(this.rowPeers == null) {
+			this.rowPeers = this.getPeersFromCollection(this.row);
 		}
-		return this.rowSiblings;
+		return this.rowPeers;
 		//return this.getSiblingsFromCollection(this.row);
 	}
 	
@@ -255,11 +255,11 @@ public class Cell implements Cloneable {
 	 * Returns the other Cells in this column
 	 * @return Cell[]
 	 */
-	public Cell[] getColumnSiblings() {
-		if(this.columnSiblings == null) {
-			this.columnSiblings = this.getSiblingsFromCollection(this.column);
+	public Cell[] getColumnPeers() {
+		if(this.columnPeers == null) {
+			this.columnPeers = this.getPeersFromCollection(this.column);
 		}
-		return this.columnSiblings;
+		return this.columnPeers;
 		//return this.getSiblingsFromCollection(this.column);
 	}
 	
@@ -267,11 +267,11 @@ public class Cell implements Cloneable {
 	 * Returns the other Cells in this nonet
 	 * @return Cell[]
 	 */
-	public Cell[] getNonetSiblings() {
-		if(this.nonetSiblings == null) {
-			this.nonetSiblings = this.getSiblingsFromCollection(this.nonet);
+	public Cell[] getBoxPeers() {
+		if(this.boxPeers == null) {
+			this.boxPeers = this.getPeersFromCollection(this.box);
 		}
-		return this.nonetSiblings;
+		return this.boxPeers;
 		//return this.getSiblingsFromCollection(this.nonet);
 	}
 	
@@ -279,11 +279,11 @@ public class Cell implements Cloneable {
 	 * Returns all siblings from this cell
 	 * @return Cell[] All siblings
 	 */
-	public Cell[] getSiblings() {
-		if(this.siblings == null) {
-			Cell[] row = this.getRowSiblings();
-			Cell[] col = this.getColumnSiblings();
-			Cell[] non = this.getNonetSiblings();
+	public Cell[] getPeers() {
+		if(this.peers == null) {
+			Cell[] row = this.getRowPeers();
+			Cell[] col = this.getColumnPeers();
+			Cell[] non = this.getBoxPeers();
 			
 			Vector<Cell> elements = new Vector<Cell>();
 			for(int i = 0; i < row.length; i++) {
@@ -291,10 +291,10 @@ public class Cell implements Cloneable {
 				if(!elements.contains(col[i])) { elements.add(col[i]); }
 				if(!elements.contains(non[i])) { elements.add(non[i]); }
 			}
-			this.siblings = elements.toArray(new Cell[0]);
+			this.peers = elements.toArray(new Cell[0]);
 			return elements.toArray(new Cell[0]);
 		}
-		return this.siblings;
+		return this.peers;
 	}
 	
 	/**
@@ -302,7 +302,7 @@ public class Cell implements Cloneable {
 	 * @param cc CellCollection to retrieve siblings from
 	 * @return Cell[]
 	 */
-	protected Cell[] getSiblingsFromCollection(CellCollection cc) {
+	protected Cell[] getPeersFromCollection(House cc) {
 		if(cc == null) {
 			return new Cell[0];
 		}
@@ -332,11 +332,4 @@ public class Cell implements Cloneable {
 		}
 		return count;
 	}
-	
-	/**
-	 * CLones the Cell
-	 */
-	public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
 }

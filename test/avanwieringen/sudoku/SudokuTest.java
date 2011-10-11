@@ -35,13 +35,13 @@ public class SudokuTest {
 	
 	@Test
 	public void getNonet() {
-		assertEquals(s.getNonet(8).getValue(6), 1);
+		assertEquals(s.getBox(8).getValue(6), 1);
 	}
 	
 	@Test
 	public void relationTest1() {
-		CellCollection row = s.getRow(8);
-		CellCollection column = s.getColumn(8);
+		House row = s.getRow(8);
+		House column = s.getColumn(8);
 		
 		s.setValue(8, 8, 4);
 		assertEquals(row.getValue(8), column.getValue(8));
@@ -49,8 +49,8 @@ public class SudokuTest {
 	
 	@Test
 	public void relationTest2() {
-		CellCollection row = s.getRow(8);
-		CellCollection nonet = s.getNonet(8);
+		House row = s.getRow(8);
+		House nonet = s.getBox(8);
 		
 		s.setValue(8, 8, 4);
 		assertEquals(row.getValue(8), nonet.getValue(8));
