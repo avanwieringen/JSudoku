@@ -70,7 +70,7 @@ public class Sudoku {
 		this.cells 			= new Cell[this.maxValue][this.maxValue];
 		this.rows			= new House[this.maxValue];
 		this.columns 		= new House[this.maxValue];
-		this.boxes 		= new House[this.maxValue];
+		this.boxes 			= new House[this.maxValue];
 		
 		int row;
 		int column;
@@ -84,6 +84,10 @@ public class Sudoku {
 				this.rows[i] 	= new House(this.maxValue, House.Type.ROW);
 				this.columns[i] = new House(this.maxValue, House.Type.COLUMN);
 				this.boxes[i] 	= new House(this.maxValue, House.Type.BOX);
+				
+				this.rows[i].setSudoku(this);
+				this.columns[i].setSudoku(this);
+				this.boxes[i].setSudoku(this);
 			}
 			
 			row 	= (int)(i/this.maxValue);

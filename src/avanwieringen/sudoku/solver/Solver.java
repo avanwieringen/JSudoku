@@ -60,7 +60,6 @@ public class Solver {
 				for (Sudoku solution : solutions) {
 					if(solution.isSolved()) return new SolverResult(solution, SolverResult.Type.SOLVED);
 					if(solution.isValid()) {
-						//System.out.println("Level " + level + "\n" + (new StringRenderer()).render(solution));
 						childResult = this.iterate(solution, level++);
 						if(childResult.getResult().equals(SolverResult.Type.SOLVED)) {
 							return childResult;

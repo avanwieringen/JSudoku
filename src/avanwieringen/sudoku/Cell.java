@@ -303,6 +303,35 @@ public class Cell {
 	}
 	
 	/**
+	 * Returns the row index of this cell
+	 * @return
+	 */
+	public int getRowIndex() {
+		return this.row.getIndex();
+	}
+	
+	/**
+	 * Returns the column index of this cell
+	 * @return
+	 */
+	public int getColumnIndex() {
+		return this.column.getIndex();
+	}
+	
+	/**
+	 * Returns the box index of this cell
+	 * @return
+	 */
+	public int getBoxIndex() {
+		return this.box.getIndex();
+	}
+	
+	@Override
+	public String toString() {
+		return "[Cell(" + this.getRowIndex() + "," + this.getColumnIndex() + "):" + String.valueOf(this.getValue()) + "]";
+	}
+	
+	/**
 	 * Auxiliary function to retrieve siblings from a general CellCollection
 	 * @param cc CellCollection to retrieve siblings from
 	 * @return Cell[]

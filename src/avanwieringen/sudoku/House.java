@@ -25,6 +25,11 @@ public class House {
 	protected Type type;
 	
 	/**
+	 * The Sudoku this house belongs to
+	 */
+	protected Sudoku sudoku;
+	
+	/**
 	 * Enumeration of the possible types
 	 *
 	 */
@@ -103,5 +108,78 @@ public class House {
 	 */
 	public Cell getCell(int i) {
 		return this.cells[i];
+	}
+	
+	/**
+	 * Sets the Sudoku of this House
+	 * @param s Sudoku
+	 */
+	public void setSudoku(Sudoku s) {
+		this.sudoku = s;
+	}
+	
+	
+	/**
+	 * Returns the Sudoku of this House
+	 * @return Sudoku
+	 */
+	public Sudoku getSudoku() {
+		return this.sudoku;
+	}
+	
+	/**
+	 * Returns the index of this House
+	 * @return
+	 */
+	public int getIndex() {
+		for(int i = 0; i < this.getSudoku().maxValue; i++) {
+			switch(this.type) {
+				case ROW:
+					if(this.getSudoku().getRow(i).equals(this)) {
+						return i;
+					}
+					break;
+				case COLUMN:
+					if(this.getSudoku().getColumn(i).equals(this)) {
+						return i;
+					}
+					break;
+				case BOX:
+					if(this.getSudoku().getBox(i).equals(this)) {
+						return i;
+					}
+					break;
+			}
+		}
+		return -1;
+	}
+	
+	/**
+	 * 
+	 */
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		str.append("[");
+		switch(this.type) {
+			case ROW:
+				str.append("Row");
+				break;
+				
+			case COLUMN:
+				str.append("Column");
+				break;
+				
+			case BOX:
+				str.append("Box");
+				break;
+		}
+		str.append("(" + this.getIndex() + "):{");
+		for(Cell c : this.getCells()) {
+			str.append(c.getValue() + ","); 
+		}
+		str.deleteCharAt(str.length() - 1);
+		str.append("}]");
+		return str.toString();
 	}
 }
