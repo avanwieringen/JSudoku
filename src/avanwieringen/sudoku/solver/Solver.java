@@ -49,17 +49,23 @@ public class Solver {
 	 * @param level The current level of iteration
 	 * @return The result of the iteration
 	 */
-	private SolverResult iterate(Sudoku s, int level) {
+	private SolverResult iterate(Sudoku s, int level) {		
 		Sudoku[] solutions;
 		SolverResult childResult;
-		for (StrategyInterface strategy : this.strategies) {
-			System.out.println("[Level " + String.valueOf(level) + "] Using solver " + strategy.getClass().getSimpleName());
-			
-			solutions = strategy.solve(s);
-			if(solutions.length > 0) {
-				for (Sudoku solution : solutions) {
-					if(solution.isSolved()) return new SolverResult(solution, SolverResult.Type.SOLVED);
-					if(solution.isValid()) {
+		boolean strategiesLeft = true;
+		boolean sudokuChanged;
+		while(!s.isSolved() && strategiesLeft) {
+			sudokuChanged = false;
+			for (StrategyInterface strategy : this.strategies) {
+				System.out.println("[Level " + String.valueOf(level) + "] Using solver " + strategy.getClass().getSimpleName());
+				solutions = strategy.solve(s);
+				
+				if(solutions.length == 1) {
+					s = solutions[0];
+					sudokuChanged = true;
+					break;
+				} else if(solutions.length > 1) {
+					for(Sudoku solution : solutions) {
 						childResult = this.iterate(solution, ++level);
 						if(childResult.getResult().equals(SolverResult.Type.SOLVED)) {
 							return childResult;
@@ -67,7 +73,14 @@ public class Solver {
 					}
 				}
 			}
+			
+			if(!sudokuChanged) { strategiesLeft = false; }
 		}
-		return new SolverResult(s, SolverResult.Type.UNSOLVABLE);
+		
+		if(s.isSolved()) {
+			return new SolverResult(s, SolverResult.Type.SOLVED);
+		} else {
+			return new SolverResult(s, SolverResult.Type.UNSOLVABLE);
+		}
 	}
 }
