@@ -4,21 +4,21 @@ import java.util.Vector;
 
 import avanwieringen.sudoku.Sudoku;
 import avanwieringen.sudoku.renderer.StringRenderer;
-import avanwieringen.sudoku.solver.strategy.StrategyInterface;
+import avanwieringen.sudoku.solver.strategy.AbstractStrategy;
 
 public class Solver {
 
 	/**
 	 * Contains all the strategies this solver uses in that order
 	 */
-	private Vector<StrategyInterface> strategies = new Vector<StrategyInterface>();
+	private Vector<AbstractStrategy> strategies = new Vector<AbstractStrategy>();
 	
 	/**
 	 * Generates a solver with the specified array of Strategies
 	 * @param strategies
 	 */
-	public Solver(StrategyInterface[] strategies) {
-		for (StrategyInterface s : strategies) {
+	public Solver(AbstractStrategy[] strategies) {
+		for (AbstractStrategy s : strategies) {
 			this.addStrategy(s);
 		}
 	}
@@ -27,7 +27,7 @@ public class Solver {
 	 * Adds a strategy to the solver
 	 * @param strategy
 	 */
-	public void addStrategy(StrategyInterface strategy) {
+	public void addStrategy(AbstractStrategy strategy) {
 		this.strategies.add(strategy);
 	}
 	
@@ -56,8 +56,8 @@ public class Solver {
 		boolean sudokuChanged;
 		while(!s.isSolved() && strategiesLeft) {
 			sudokuChanged = false;
-			for (StrategyInterface strategy : this.strategies) {
-				System.out.println("[Level " + String.valueOf(level) + "] Using solver " + strategy.getClass().getSimpleName());
+			for (AbstractStrategy strategy : this.strategies) {
+				System.out.println("[Level " + String.valueOf(level) + "] Using solver " + strategy.getName());
 				solutions = strategy.solve(s);
 				
 				if(solutions.length == 1) {

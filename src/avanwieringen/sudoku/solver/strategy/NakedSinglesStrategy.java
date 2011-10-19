@@ -9,7 +9,7 @@ import com.sun.tools.javac.util.Pair;
 import avanwieringen.sudoku.Cell;
 import avanwieringen.sudoku.Sudoku;
 
-public class NakedSinglesStrategy implements StrategyInterface {
+public class NakedSinglesStrategy extends AbstractStrategy {
 	
 	Cloner cloner = new Cloner();
 	

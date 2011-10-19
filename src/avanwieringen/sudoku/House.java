@@ -155,6 +155,14 @@ public class House {
 	}
 	
 	/**
+	 * Returns the Type of this House
+	 * @return
+	 */
+	public Type getType() {
+		return this.type;
+	}
+	
+	/**
 	 * 
 	 */
 	@Override

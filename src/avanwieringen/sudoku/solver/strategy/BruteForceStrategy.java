@@ -7,7 +7,7 @@ import com.rits.cloning.Cloner;
 import avanwieringen.sudoku.Cell;
 import avanwieringen.sudoku.Sudoku;
 
-public class BruteForceStrategy implements StrategyInterface {
+public class BruteForceStrategy extends AbstractStrategy {
 
 	Cloner cloner = new Cloner();
 	/**

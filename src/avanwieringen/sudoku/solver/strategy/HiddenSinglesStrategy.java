@@ -10,7 +10,7 @@ import avanwieringen.sudoku.Cell;
 import avanwieringen.sudoku.House;
 import avanwieringen.sudoku.Sudoku;
 
-public class HiddenSinglesStrategy implements StrategyInterface {
+public class HiddenSinglesStrategy extends AbstractStrategy {
 
 	Cloner cloner = new Cloner();
 	

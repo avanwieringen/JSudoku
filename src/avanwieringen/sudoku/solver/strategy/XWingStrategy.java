@@ -12,7 +12,7 @@ import avanwieringen.sudoku.Sudoku;
 
 import com.rits.cloning.Cloner;
 
-public class XWingStrategy implements StrategyInterface {
+public class XWingStrategy extends AbstractStrategy {
 
 	Cloner cloner = new Cloner();
 
