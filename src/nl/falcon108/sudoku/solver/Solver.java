@@ -1,10 +1,11 @@
-package avanwieringen.sudoku.solver;
+package nl.falcon108.sudoku.solver;
 
 import java.util.Vector;
 
-import avanwieringen.sudoku.Sudoku;
-import avanwieringen.sudoku.renderer.StringRenderer;
-import avanwieringen.sudoku.solver.strategy.AbstractStrategy;
+import nl.falcon108.sudoku.Sudoku;
+import nl.falcon108.sudoku.renderer.StringRenderer;
+import nl.falcon108.sudoku.solver.strategy.AbstractStrategy;
+
 
 public class Solver {
 

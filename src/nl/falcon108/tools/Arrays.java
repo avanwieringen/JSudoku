@@ -1,4 +1,4 @@
-package avanwieringen.tools;
+package nl.falcon108.tools;
 
 public class Arrays {
 

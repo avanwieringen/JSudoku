@@ -1,6 +1,6 @@
-package avanwieringen.sudoku.solver;
+package nl.falcon108.sudoku.solver;
 
-import avanwieringen.sudoku.Sudoku;
+import nl.falcon108.sudoku.Sudoku;
 
 public class SolverResult {
 

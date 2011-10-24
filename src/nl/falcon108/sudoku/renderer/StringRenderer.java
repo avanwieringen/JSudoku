@@ -1,6 +1,6 @@
-package avanwieringen.sudoku.renderer;
+package nl.falcon108.sudoku.renderer;
 
-import avanwieringen.sudoku.Sudoku;
+import nl.falcon108.sudoku.Sudoku;
 
 public class StringRenderer {
 

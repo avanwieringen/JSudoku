@@ -1,4 +1,4 @@
-package avanwieringen.sudoku;
+package nl.falcon108.sudoku;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

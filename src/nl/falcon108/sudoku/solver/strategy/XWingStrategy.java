@@ -1,14 +1,15 @@
-package avanwieringen.sudoku.solver.strategy;
+package nl.falcon108.sudoku.solver.strategy;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Vector;
 
+import nl.falcon108.sudoku.Cell;
+import nl.falcon108.sudoku.House;
+import nl.falcon108.sudoku.Sudoku;
+
 import org.apache.commons.lang3.ArrayUtils;
 
-import avanwieringen.sudoku.Cell;
-import avanwieringen.sudoku.House;
-import avanwieringen.sudoku.Sudoku;
 
 import com.rits.cloning.Cloner;
 

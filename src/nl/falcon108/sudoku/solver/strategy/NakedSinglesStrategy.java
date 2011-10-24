@@ -1,13 +1,14 @@
-package avanwieringen.sudoku.solver.strategy;
+package nl.falcon108.sudoku.solver.strategy;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import nl.falcon108.sudoku.Cell;
+import nl.falcon108.sudoku.Sudoku;
+
 import com.rits.cloning.Cloner;
 import com.sun.tools.javac.util.Pair;
 
-import avanwieringen.sudoku.Cell;
-import avanwieringen.sudoku.Sudoku;
 
 public class NakedSinglesStrategy extends AbstractStrategy {
 	

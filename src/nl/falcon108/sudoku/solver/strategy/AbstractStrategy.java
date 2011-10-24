@@ -1,6 +1,6 @@
-package avanwieringen.sudoku.solver.strategy;
+package nl.falcon108.sudoku.solver.strategy;
 
-import avanwieringen.sudoku.Sudoku;
+import nl.falcon108.sudoku.Sudoku;
 
 public abstract class AbstractStrategy {
 

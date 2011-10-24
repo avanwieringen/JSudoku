@@ -1,6 +1,9 @@
-package avanwieringen.sudoku;
+package nl.falcon108.sudoku;
 
 import static org.junit.Assert.*;
+
+import nl.falcon108.sudoku.House;
+import nl.falcon108.sudoku.Sudoku;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Before;

@@ -1,4 +1,4 @@
-package avanwieringen.sudoku;
+package nl.falcon108.sudoku;
 
 import org.apache.commons.lang3.ArrayUtils;
 

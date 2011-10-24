@@ -1,11 +1,12 @@
-package avanwieringen.sudoku.solver.strategy;
+package nl.falcon108.sudoku.solver.strategy;
 
 import java.util.Vector;
 
+import nl.falcon108.sudoku.Cell;
+import nl.falcon108.sudoku.Sudoku;
+
 import com.rits.cloning.Cloner;
 
-import avanwieringen.sudoku.Cell;
-import avanwieringen.sudoku.Sudoku;
 
 public class BruteForceStrategy extends AbstractStrategy {
 

@@ -1,6 +1,8 @@
-package avanwieringen.sudoku;
+package nl.falcon108.sudoku;
 
 import static org.junit.Assert.*;
+
+import nl.falcon108.sudoku.Cell;
 
 import org.junit.Test;
 
