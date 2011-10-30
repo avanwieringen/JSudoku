@@ -3,8 +3,6 @@ package nl.falcon108.sudoku;
 import java.util.Arrays;
 import java.util.Vector;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 public class Cell {
 
 	/**

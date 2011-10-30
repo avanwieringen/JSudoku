@@ -3,7 +3,6 @@ package nl.falcon108.sudoku.solver;
 import java.util.Vector;
 
 import nl.falcon108.sudoku.Sudoku;
-import nl.falcon108.sudoku.renderer.StringRenderer;
 import nl.falcon108.sudoku.solver.strategy.AbstractStrategy;
 
 
@@ -58,7 +57,7 @@ public class Solver {
 		while(!s.isSolved() && strategiesLeft) {
 			sudokuChanged = false;
 			for (AbstractStrategy strategy : this.strategies) {
-				System.out.println("[Level " + String.valueOf(level) + "] Using solver " + strategy.getName());
+				//System.out.println("[Level " + String.valueOf(level) + "] Using solver " + strategy.getName());
 				solutions = strategy.solve(s);
 				
 				if(solutions.length == 1) {
