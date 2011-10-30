@@ -40,25 +40,30 @@ public class TestScript {
 					new HiddenSinglesStrategy(),
 					new LockedCandidatesStrategy(),
 					new NakedSubSetStrategy(NakedSubSetStrategy.Type.PAIR),
-					new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.PAIR),
 					new NakedSubSetStrategy(NakedSubSetStrategy.Type.TRIPLE),
-					new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.TRIPLE),
 					new NakedSubSetStrategy(NakedSubSetStrategy.Type.QUAD),
 					new NakedSubSetStrategy(NakedSubSetStrategy.Type.QUINE),
-					new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.QUAD),
+					/**new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.PAIR),
+					new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.TRIPLE),
+					new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.QUAD),**/
 					new XWingStrategy(),
-					new BruteForceStrategy()
+					new BruteForceStrategy(),
 					
 		});
 		
-		FileReader r = new FileReader(new File("input/sudokus.txt"));
+		FileReader r = new FileReader(new File("input/gordon17.txt"), 1000);
+		Sudoku[] sudokus = r.getSudokus();
 		StringRenderer renderer = new StringRenderer(Type.LINE);
 		SolverResult solution;
-		for(Sudoku s : r.getSudokus()) {
-			solution = solver.solve(s);
-			System.out.println(renderer.render(solution.getSoduku()));
+		
+		System.out.println("Starting...");
+		long start = System.currentTimeMillis();
+		for(int i = 0; i < 1000; i++) {
+			solution = solver.solve(sudokus[i]);
+			//System.out.println(renderer.render(solution.getSoduku()));
 		}
-		System.out.println("Done");
+		long end = System.currentTimeMillis();
+		System.out.println("Done in " + (end - start) + " milliseconds");
 		
 		
 		//SolverResult solution = solver.solve(s);

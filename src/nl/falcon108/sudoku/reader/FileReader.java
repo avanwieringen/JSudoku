@@ -14,9 +14,15 @@ import nl.falcon108.sudoku.Sudoku;
 public class FileReader implements ReaderInterface {
 
 	private File file;
+	private int maxCapacity;
 	
 	public FileReader(File file) {
+		this(file, 1000);
+	}
+	
+	public FileReader(File file, int maxCapacity) {
 		this.file = file;
+		this.maxCapacity = maxCapacity;
 	}
 	
 	@Override
@@ -27,9 +33,10 @@ public class FileReader implements ReaderInterface {
 			DataInputStream in 		= new DataInputStream(fstream);
 			BufferedReader br 		= new BufferedReader(new InputStreamReader(in));
 			String strLine;
-			
-			while ((strLine = br.readLine()) != null)   {
+			int i = 0;
+			while ((strLine = br.readLine()) != null && i < this.maxCapacity)   {
 				sudokus.add(new Sudoku(strLine));
+				i++;
 			}
 		} catch(FileNotFoundException exp) {
 			System.out.println(exp.getMessage());
