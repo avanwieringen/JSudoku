@@ -25,6 +25,10 @@ public class TestScript {
 		//Sudoku s = new Sudoku("005160000600073000300005706000030691139756482862491007401000005000500008000007200"); // naked pair
 		//Sudoku s = new Sudoku("700605029000800036001000074007008205090000483308000701279000658010789342800526917"); // naked triple
 		//Sudoku s = new Sudoku("476050903132000085598000007800060009007405308300080002700000291280000576001070834"); // naked quad
+		//Sudoku s = new Sudoku("010003008000500903000029000080000609279156834406000070000270000302001000600300090"); // hidden single
+		//Sudoku s = new Sudoku("800070009010000050700608003380105274000207000200030005608409500100000006590000040"); // hidden pair
+		//Sudoku s = new Sudoku("605301204703004509200000000152936847476812005938457621500000000807000402309108756"); // hidden triple
+		//Sudoku s = new Sudoku("053108004060005008008200003000000000025800097709001060832010009004780006000000081"); // hidden quad
 		StringRenderer renderer = new StringRenderer(Type.SQUARE);
 		System.out.println(renderer.render(s));
 		
@@ -35,19 +39,17 @@ public class TestScript {
 					new NakedSubSetStrategy(NakedSubSetStrategy.Type.PAIR),
 					new NakedSubSetStrategy(NakedSubSetStrategy.Type.TRIPLE),
 					new NakedSubSetStrategy(NakedSubSetStrategy.Type.QUAD),
+					new NakedSubSetStrategy(NakedSubSetStrategy.Type.QUINE),
+					new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.PAIR),
+					new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.TRIPLE),
+					new HiddenSubSetStrategy(HiddenSubSetStrategy.Type.QUAD),
 					new XWingStrategy(),
-					new BruteForceStrategy(),
+					new BruteForceStrategy()
+					
 		});
 		SolverResult solution = solver.solve(s);
 		System.out.println(renderer.render(solution.getSoduku()));
 		System.out.println(solution.getResult().name());
-		
-		//Combinations.generate(new Integer[] {1, 2, 3, 4, 5, 6, 7, 8}, 2);
-		//ArrayList<ArrayList<Integer>> combs = Combinations.generate(new Integer[] {0, 1, 2, 3, 4, 5, 6, 7, 8}, 4);
-		//for(ArrayList<Integer> c : combs) {
-		//	System.out.println(ArrayUtils.toString(c));
-		//}
-		//Combinations.generate(new Integer[] {1, 2}, 2);
 	}
 
 }

@@ -8,9 +8,6 @@ import nl.falcon108.sudoku.Cell;
 import nl.falcon108.sudoku.House;
 import nl.falcon108.sudoku.Sudoku;
 
-import org.apache.commons.lang3.ArrayUtils;
-
-
 import com.rits.cloning.Cloner;
 
 public class XWingStrategy extends AbstractStrategy {
